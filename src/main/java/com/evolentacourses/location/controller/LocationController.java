@@ -32,7 +32,7 @@ public class LocationController {
                             .format("http://localhost:8082/?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
                     return new ResponseEntity<>(restTemplate.getForObject(url, Weather.class), HttpStatus.OK);
                 })
-                .orElse(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+                .orElse(new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/")
