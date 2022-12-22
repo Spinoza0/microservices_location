@@ -4,6 +4,7 @@ import com.evolentacourses.location.model.Geodata;
 import com.evolentacourses.location.model.Weather;
 import com.evolentacourses.location.repository.GeodataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ public class LocationController {
     private GeodataRepository repository;
     @Autowired
     private RestTemplate restTemplate;
+    @Value("${weather.url}")
+    private String weatherUrl;
 
     @GetMapping("/")
     public Optional<Geodata> getWeather(@RequestParam String location) {
@@ -29,7 +32,7 @@ public class LocationController {
         return geodataOptional
                 .map(geodata -> {
                     String url = String
-                            .format("http://localhost:8082/?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
+                            .format("http://%s/?lat=%s&lon=%s", weatherUrl, geodata.getLat(), geodata.getLon());
                     return new ResponseEntity<>(restTemplate.getForObject(url, Weather.class), HttpStatus.OK);
                 })
                 .orElse(new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
